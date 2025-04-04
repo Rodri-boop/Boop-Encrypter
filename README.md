@@ -26,8 +26,6 @@ Este es un gestor de contraseñas en **Java** que utiliza **AES-256** para cifra
    cd password-manager
 2. **Compila y ejecuta el programa**
    ```bash
-    Copiar
-    Editar
     javac *.java
     java PasswordManager
 # 📖 Uso
