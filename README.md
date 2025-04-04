@@ -1,4 +1,4 @@
-# 🔐 Gestor de Contraseñas Cifradas en Java
+# 🔐 Gestor de Contraseñas Cifradas en Java Boop-Encrypter
 
 Este es un gestor de contraseñas en **Java** que utiliza **AES-256** para cifrar y almacenar de forma segura las credenciales del usuario en un archivo local.
 
