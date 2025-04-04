@@ -22,8 +22,8 @@ Este es un gestor de contraseñas en **Java** que utiliza **AES-256** para cifra
 
 1. **Clona el repositorio**  
    ```bash
-   git clone https://github.com/tu-usuario/password-manager.git
-   cd password-manager
+   git clone https://github.com/tu-usuario/Boop-Encrypter.git
+   cd Boop-Encrypter
 2. **Compila y ejecuta el programa**
    ```bash
     javac *.java
