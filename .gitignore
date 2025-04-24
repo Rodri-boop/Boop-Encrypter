@@ -24,6 +24,8 @@ key.aes
 salt.bin
 *.keystore
 password.dat
+*.dat
+*.aes
 
 # Build tools
 /target/
