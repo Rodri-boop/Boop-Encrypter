@@ -35,9 +35,9 @@ public class PasswordManager {
         }
     }
 
-    public static void addPassword(String service, String password){
+    public static void addPassword(String service, String password, Encryptor encryptor){
         try {
-            String encryptedPassword = Encryptor.encrypt(password);
+            String encryptedPassword = encryptor.encrypt(password);
             passwordMap.put(service, encryptedPassword);
             savePassword();
             System.out.println("✅ Contraseña guardada con éxito.");
@@ -46,16 +46,16 @@ public class PasswordManager {
         }
     }
 
-    public static void getPassword(String service){
-        try{
-            if(passwordMap.containsKey(service)){
-                String decryptedPassword = Encryptor.decrypt(passwordMap.get(service));
-                System.out.println("🔑 Contraseña para " + service + ":" + decryptedPassword);
-            }else {
+    public static void getPassword(String service, Encryptor encryptor){
+        try {
+            if (passwordMap.containsKey(service)) {
+                String decryptedPassword = encryptor.decrypt(passwordMap.get(service));
+                System.out.println("🔑 Contraseña para " + service + ": " + decryptedPassword);
+            } else {
                 System.out.println("⚠️ No hay contraseña guardada para " + service);
             }
         } catch (Exception e) {
-            System.out.println("❌ Error al descrifrar la contraseña");
+            System.out.println("❌ Error al descifrar la contraseña");
         }
     }
 
@@ -74,40 +74,50 @@ public class PasswordManager {
         loadPassword();
         Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("\n🔐 GESTOR DE CONTRASEÑAS");
-            System.out.println("1. Agregar contraseña");
-            System.out.println("2. Recuperar contraseña");
-            System.out.println("3. Listar servicios");
-            System.out.println("4. Salir");
-            System.out.print("Selecciona una opción: ");
+        try {
+            char[] masterPassword = KeyDerivation.getOrCreateMasterPassword();
+            byte[] key = KeyDerivation.getKeyBytesFromMasterPassword(masterPassword);
+            Encryptor encryptor = new Encryptor(key);
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            while (true) {
+                System.out.println("\n🔐 GESTOR DE CONTRASEÑAS");
+                System.out.println("1. Agregar contraseña");
+                System.out.println("2. Recuperar contraseña");
+                System.out.println("3. Listar servicios");
+                System.out.println("4. Salir");
+                System.out.print("Selecciona una opción: ");
 
-            switch (choice) {
-                case 1:
-                    System.out.print("🔹 Ingresa el servicio: ");
-                    String service = scanner.nextLine();
-                    System.out.print("🔹 Ingresa la contraseña: ");
-                    String password = scanner.nextLine();
-                    addPassword(service, password);
-                    break;
-                case 2:
-                    System.out.print("🔍 Ingresa el servicio: ");
-                    String searchService = scanner.nextLine();
-                    getPassword(searchService);
-                    break;
-                case 3:
-                    listServices();
-                    break;
-                case 4:
-                    System.out.println("👋 Saliendo del gestor. ¡Hasta luego!");
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("⚠️ Opción no válida. Intenta de nuevo.");
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("🔹 Ingresa el servicio: ");
+                        String service = scanner.nextLine();
+                        System.out.print("🔹 Ingresa la contraseña: ");
+                        String password = scanner.nextLine();
+                        addPassword(service, password, encryptor);
+                        break;
+                    case 2:
+                        System.out.print("🔍 Ingresa el servicio: ");
+                        String searchService = scanner.nextLine();
+                        getPassword(searchService, encryptor);
+                        break;
+                    case 3:
+                        listServices();
+                        break;
+                    case 4:
+                        System.out.println("👋 Saliendo del gestor. ¡Hasta luego!");
+                        scanner.close();
+                        return;
+                    default:
+                        System.out.println("⚠️ Opción no válida. Intenta de nuevo.");
+                }
             }
+
+        } catch (Exception e) {
+            System.out.println("❌ Error al inicializar el sistema de seguridad.");
+            e.printStackTrace();
         }
     }
 }
